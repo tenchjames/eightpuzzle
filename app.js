@@ -60,6 +60,22 @@ function getNeighbors(state) {
   return neighbors;
 }
 
+function manhatthanDistance(state) {
+  const tileArray = state.tiles.split('').map(n => Number(n));
+  let row, column, goalRow, goalColumn, manhatthanDistance = 0;
+  for (let i = 0; i < tileArray.length; i += 1) {
+    if (tileArray[i] === 0) {
+      continue; // the zero tile does not count in the manhatthan distance
+    }
+    row = Math.floor(i / 3);
+    column = i % 3;
+    goalRow = Math.floor(tileArray[i] / 3);
+    goalColumn = tileArray[i] % 3;
+    manhatthanDistance += Math.abs(row - goalRow) + Math.abs(column - goalColumn);
+  }
+  return manhatthanDistance;
+}
+
 function findGoalState(initialState) {
   let tiles = initialState.tiles.split('')
     .map(t => Number(t)),
@@ -181,5 +197,9 @@ function dfs(initialState) {
 
 //const initialState = new Node({tiles: "120345678"});
 //const initialState = new Node({tiles: "312045678"});
-const initialState = new Node({tiles: "125340678"});
-dfs(initialState);
+//const initialState = new Node({tiles: "125340678"});
+//dfs(initialState);
+
+
+const manhatthanState = new Node({tiles:"813402765"});
+console.log(manhatthanDistance(manhatthanState));
