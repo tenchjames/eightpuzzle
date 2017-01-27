@@ -1,17 +1,17 @@
 "use strict";
 
-var Node = function(args) {
+let Node = function(args) {
   this.parentNode = null;
   this.move = args.move || null;
   this.tiles = args.tiles; // must pass in tile state
   this.children = [];
   this.emptyLocation = args.zeroLocation || this.findZero(args.tiles);
-}
+};
 
 Node.prototype.findZero = function(tiles) {
   const tileArray = tiles.split('');
   return tileArray.indexOf("0");
-}
+};
 
 function modulo(n, mod) {
   return (((n % mod) + mod) % mod);
