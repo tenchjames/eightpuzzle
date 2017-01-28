@@ -15,6 +15,7 @@ const searches = {
 //const initialState = new Node({state: "120345678"});
 //const initialState = new Node({state: "312045678"});
 const initialState = new Node({state: "125340678"});
+//const initialState = new Node({state: "867254301"});
 const eightPuzzle = new EightPuzzle(initialState);
 searches["dfs"](eightPuzzle);
 

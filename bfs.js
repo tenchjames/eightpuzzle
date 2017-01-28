@@ -25,7 +25,7 @@ function bfs(eightPuzzle) {
     maxRamUsage: 0
   };
 
-  let startTime = new Date();
+  let startTime = new Date().getTime();
 
   const frontier = new Queue();
   const frontierByState = new Set(); // for constant time look up
@@ -40,7 +40,7 @@ function bfs(eightPuzzle) {
 
     if (eightPuzzle.goalTest(node.state)) {
       stats.fringeSize = frontier.nItems;
-      stats.runningTime = new Date() - startTime;
+      stats.runningTime = new Date().getTime() - startTime;
       summary(node, stats);
       return node; // add some code to track levels, memory etc
     }

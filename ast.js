@@ -1,7 +1,14 @@
 "use strict";
 let Node = require('./Node.js');
-let Stack = require('./Stack.js');
+let Queue = require('./Queue.js');
 let summary = require('./summary.js');
+
+class AStarNode extends Node {
+  constructor(args) {
+    super(args);
+    this.estimatedTotalCost = args.estimatedTotalCost || 0;
+  }
+}
 
 function childNode(eightPuzzle, parent, action) {
   const args = {
@@ -10,10 +17,11 @@ function childNode(eightPuzzle, parent, action) {
     action: action,
     pathCost: parent.pathCost + 1
   };
-  return new Node(args);
+  args.estimatedTotalCost = args.pathCost + eightPuzzle.getManhatthanDistance(state);
+  return new AStarNode(args);
 }
 
-function dfs(eightPuzzle) {
+function bfs(eightPuzzle) {
   // bookkeeping variables;
 
   let stats = {
@@ -27,38 +35,32 @@ function dfs(eightPuzzle) {
 
   let startTime = new Date().getTime();
 
-  const frontier = new Stack();
+  const frontier = new Queue();
   const frontierByState = new Set(); // for constant time look up
   const explored = new Set();
   const node = eightPuzzle.initialState;
-  const actions = eightPuzzle.actions.slice().reverse();
 
-  frontier.push(node);
+  frontier.enqueue(node);
 
   while (!frontier.isEmpty()) {
-    let node = frontier.pop();
+    let node = frontier.dequeue();
     explored.add(node.state);
 
     if (eightPuzzle.goalTest(node.state)) {
-      stats.fringeSize = frontier.getSize();
+      stats.fringeSize = frontier.nItems;
       stats.runningTime = new Date().getTime() - startTime;
       summary(node, stats);
       return node; // add some code to track levels, memory etc
     }
     stats.nodesExpanded += 1;
-
-    let currentActions = actions.filter(a => {
-      return eightPuzzle.canTakeAction(node.state, a);
-    });
-
-    actions.forEach(action => {
+    eightPuzzle.actions.forEach(action => {
       if (eightPuzzle.canTakeAction(node.state, action)) {
         const child = childNode(eightPuzzle, node, action);
         if (!frontierByState.has(child.state) && !explored.has(child.state)) {
-          frontier.push(child);
+          frontier.enqueue(child);
           frontierByState.add(child.state);
-          if (frontier.getSize() > stats.maxFringeSize) {
-            stats.maxFringeSize = frontier.getSize();
+          if (frontier.nItems > stats.maxFringeSize) {
+            stats.maxFringeSize = frontier.nItems;
           }
         }
       }
@@ -67,19 +69,4 @@ function dfs(eightPuzzle) {
   return null;
 }
 
-module.exports = dfs;
-
-// const neighbors = getNeighbors(state);
-// if (neighbors.length === 0) {
-//   state.paren = null;
-// } else {
-//   neighbors.forEach(n => {
-//     // check if not in frontier and not explored
-//     let inFrontier = frontierByState[n.state] ? true: false;
-//     let inExplored = explored[n.state] ? true : false;
-//     if (!inFrontier && !inExplored) {
-//       frontier.push(n);
-//       frontierByState[n.state] = true; // for faster searches
-//     }
-//   });
-// }
+module.exports = bfs;
