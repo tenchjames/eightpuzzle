@@ -72,6 +72,8 @@ function ast(eightPuzzle) {
           if (frontier.nItems > stats.maxFringeSize) {
             stats.maxFringeSize = frontier.nItems;
           }
+        } else if (frontier.peekByState(child.state) && frontier.peekByState(child.state).estimatedTotalCost > child.estimatedTotalCost) {
+          frontier.replaceNodeByState(child);
         }
       }
     });
