@@ -1,17 +1,7 @@
 "use strict";
-
-let Node = function(args) {
-  this.parentNode = null;
-  this.move = args.move || null;
-  this.tiles = args.tiles; // must pass in tile state
-  this.children = [];
-  this.emptyLocation = args.zeroLocation || this.findZero(args.tiles);
-};
-
-Node.prototype.findZero = function(tiles) {
-  const tileArray = tiles.split('');
-  return tileArray.indexOf("0");
-};
+let Node = require('./Node.js');
+let Problem = require('./Problem.js');
+let PriorityQueue = require('./PriorityQueue.js');
 
 function modulo(n, mod) {
   return (((n % mod) + mod) % mod);
@@ -24,11 +14,11 @@ function swap(x, y, arr) {
 }
 
 function setNeighborState(emptyLocation, nextLocation, move, state) {
-  const neighborTileArray = state.tiles.split('');
+  const neighborTileArray = state.state.split('');
   let neighbor;
   swap(emptyLocation, nextLocation, neighborTileArray);
-  neighbor = new Node({move: move, tiles: neighborTileArray.join(''), zeroLocation: nextLocation});
-  neighbor.parentNode = state;
+  neighbor = new Node({action: move, state: neighborTileArray.join(''), zeroLocation: nextLocation});
+  neighbor.parent = state;
   return neighbor;
 }
 
@@ -48,7 +38,7 @@ function getNeighbors(state) {
   }
   // check down
   nextLocation = emptyLocation + 3;
-  if (nextLocation < state.tiles.length) {
+  if (nextLocation < state.state.length) {
     neighbors.push(setNeighborState(emptyLocation, emptyLocation + 3, 'DOWN', state));
   }
   // check up
@@ -60,24 +50,25 @@ function getNeighbors(state) {
   return neighbors;
 }
 
-function manhatthanDistance(state) {
-  const tileArray = state.tiles.split('').map(n => Number(n));
+function manhatthanDistance(state,goal) {
+  const tileArray = state.split('').map(n => Number(n));
   let row, column, goalRow, goalColumn, manhatthanDistance = 0;
+  let goalState = Problem.goalStates[goal];
   for (let i = 0; i < tileArray.length; i += 1) {
     if (tileArray[i] === 0) {
       continue; // the zero tile does not count in the manhatthan distance
     }
     row = Math.floor(i / 3);
     column = i % 3;
-    goalRow = Math.floor(tileArray[i] / 3);
-    goalColumn = tileArray[i] % 3;
+    goalRow = goalState[tileArray[i]][0];
+    goalColumn = goalState[tileArray[i]][1];
     manhatthanDistance += Math.abs(row - goalRow) + Math.abs(column - goalColumn);
   }
   return manhatthanDistance;
 }
 
 function findGoalState(initialState) {
-  let tiles = initialState.tiles.split('')
+  let tiles = initialState.state.split('')
     .map(t => Number(t)),
     smallerSuccessorCount = 0,
     goalState = "012345678";
@@ -100,28 +91,28 @@ function doBfsSearch(initialState) {
   const frontier = [];
   const frontierByState = {};
   const explored = {};
-
   frontier.unshift(initialState);
 
   function goalTest(state) {
-    return goalState === state.tiles;
+    return goalState === state.state;
   }
-
+  
   while (frontier.length > 0) {
     let state = frontier.pop();
-    explored[state.tiles] = true;
+    explored[state.state] = true;
     if (goalTest(state)) {
       return state;
     }
 
     // get possible neighbors based on moves
+    var neighbors = getNeighbors(state);
     getNeighbors(state).forEach(n => {
       // check if not in frontier and not explored
-      let inFrontier = frontierByState[n.tiles] ? true: false;
-      let inExplored = explored[n.tiles] ? true : false;
+      let inFrontier = frontierByState[n.state] ? true: false;
+      let inExplored = explored[n.state] ? true : false;
       if (!inFrontier && !inExplored) {
         frontier.unshift(n);
-        frontierByState[n.tiles] = true; // for faster searches
+        frontierByState[n.state] = true; // for faster searches
       }
     });
   }
@@ -137,12 +128,12 @@ function doDfsSearch(initialState) {
   frontier.push(initialState);
 
   function goalTest(state) {
-    return goalState === state.tiles;
+    return goalState === state.state;
   }
 
   while (frontier.length > 0) {
     let state = frontier.pop();
-    explored[state.tiles] = true;
+    explored[state.state] = true;
     if (goalTest(state)) {
       return state;
     }
@@ -151,15 +142,15 @@ function doDfsSearch(initialState) {
     // if neighbors returns an empty array we know this state does not have children
     const neighbors = getNeighbors(state);
     if (neighbors.length === 0) {
-      state.parentNode = null;
+      state.paren = null;
     } else {
       neighbors.forEach(n => {
         // check if not in frontier and not explored
-        let inFrontier = frontierByState[n.tiles] ? true: false;
-        let inExplored = explored[n.tiles] ? true : false;
+        let inFrontier = frontierByState[n.state] ? true: false;
+        let inExplored = explored[n.state] ? true : false;
         if (!inFrontier && !inExplored) {
           frontier.push(n);
-          frontierByState[n.tiles] = true; // for faster searches
+          frontierByState[n.state] = true; // for faster searches
         }
       });
     }
@@ -174,9 +165,9 @@ function bfs(initialState) {
     return;
   }
   let moves = [];
-  while (currentState.parentNode !== null) {
-    moves.unshift(currentState.move);
-    currentState = currentState.parentNode;
+  while (currentState.parent !== null) {
+    moves.unshift(currentState.action);
+    currentState = currentState.parent;
   }
   console.log(moves.join(','));
 }
@@ -189,17 +180,29 @@ function dfs(initialState) {
   }
   let moves = [];
   while (currentState.parentNode !== null) {
-    moves.unshift(currentState.move);
+    moves.unshift(currentState.action);
     currentState = currentState.parentNode;
   }
   console.log(moves.join(','));
 }
 
-//const initialState = new Node({tiles: "120345678"});
-//const initialState = new Node({tiles: "312045678"});
-//const initialState = new Node({tiles: "125340678"});
-//dfs(initialState);
+//const initialState = new Node({state: "120345678"});
+//const initialState = new Node({state: "312045678"});
+//const initialState = new Node({state: "125340678"});
+//bfs(initialState);
 
 
-const manhatthanState = new Node({tiles:"813402765"});
-console.log(manhatthanDistance(manhatthanState));
+//const manhatthanState = new Node({state:"813402765"});
+//console.log(manhatthanDistance(manhatthanState.state, findGoalState(manhatthanState)));
+
+let pq = new PriorityQueue((a,b) => {
+  if (a.cost > b.cost) {
+    return 1;
+  }
+  if (b.cost > a.cost) {
+    return -1;
+  }
+  return 0;
+});
+
+
