@@ -11,7 +11,7 @@ class PriorityQueue {
     this.compare = compare;
   }
 
-  enqueue(item) {
+  add(item) {
     if (this.nItems === 0) {
       this.queue[this.nItems++] = item;
     } else {
@@ -28,7 +28,7 @@ class PriorityQueue {
     }
   }
 
-  dequeue() {
+  remove() {
     if (this.nItems > 0) {
       this.nItems -= 1;
       return this.queue[this.nItems];

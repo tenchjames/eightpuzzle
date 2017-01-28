@@ -115,8 +115,8 @@ class EightPuzzle {
     return this.goalState === testState;
   }
 
-  getManhatthanDistance(parentState, action) {
-    const tileArray = parentState.split('').map(n => Number(n));
+  getManhattanDistance(state) {
+    const tileArray = state.split('').map(n => Number(n));
     let row, column, goalRow, goalColumn, manhatthanDistance = 0;
     let goalState = EightPuzzle.goalStates[this.goalState];
     for (let i = 0; i < tileArray.length; i += 1) {

@@ -6,10 +6,12 @@ let Queue = require('./Queue.js');
 let Stack = require('./Stack.js');
 let bfs = require('./bfs.js');
 let dfs = require('./dfs.js');
+let ast = require('./ast.js');
 
 const searches = {
   bfs: bfs,
-  dfs: dfs
+  dfs: dfs,
+  ast: ast
 };
 
 //const initialState = new Node({state: "120345678"});
@@ -17,7 +19,7 @@ const searches = {
 const initialState = new Node({state: "125340678"});
 //const initialState = new Node({state: "867254301"});
 const eightPuzzle = new EightPuzzle(initialState);
-searches["dfs"](eightPuzzle);
+searches["ast"](eightPuzzle);
 
 
 //const manhatthanState = new Node({state:"813402765"});
