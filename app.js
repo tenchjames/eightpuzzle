@@ -2,6 +2,7 @@
 let Node = require('./Node.js');
 let Problem = require('./Problem.js');
 let PriorityQueue = require('./PriorityQueue.js');
+let Queue = require('./Queue.js');
 
 function modulo(n, mod) {
   return (((n % mod) + mod) % mod);
@@ -88,17 +89,17 @@ function findGoalState(initialState) {
 
 function doBfsSearch(initialState) {
   const goalState = findGoalState(initialState);
-  const frontier = [];
+  const frontier = new Queue;
   const frontierByState = {};
   const explored = {};
-  frontier.unshift(initialState);
+  frontier.enqueue(initialState);
 
   function goalTest(state) {
     return goalState === state.state;
   }
   
-  while (frontier.length > 0) {
-    let state = frontier.pop();
+  while (!frontier.isEmpty()) {
+    let state = frontier.dequeue();
     explored[state.state] = true;
     if (goalTest(state)) {
       return state;
@@ -111,7 +112,7 @@ function doBfsSearch(initialState) {
       let inFrontier = frontierByState[n.state] ? true: false;
       let inExplored = explored[n.state] ? true : false;
       if (!inFrontier && !inExplored) {
-        frontier.unshift(n);
+        frontier.enqueue(n);
         frontierByState[n.state] = true; // for faster searches
       }
     });
@@ -188,21 +189,21 @@ function dfs(initialState) {
 
 //const initialState = new Node({state: "120345678"});
 //const initialState = new Node({state: "312045678"});
-//const initialState = new Node({state: "125340678"});
-//bfs(initialState);
+const initialState = new Node({state: "125340678"});
+bfs(initialState);
 
 
 //const manhatthanState = new Node({state:"813402765"});
 //console.log(manhatthanDistance(manhatthanState.state, findGoalState(manhatthanState)));
 
-let pq = new PriorityQueue((a,b) => {
-  if (a.cost > b.cost) {
-    return 1;
-  }
-  if (b.cost > a.cost) {
-    return -1;
-  }
-  return 0;
-});
+// let pq = new PriorityQueue((a,b) => {
+//   if (a.cost > b.cost) {
+//     return 1;
+//   }
+//   if (b.cost > a.cost) {
+//     return -1;
+//   }
+//   return 0;
+// });
 
 

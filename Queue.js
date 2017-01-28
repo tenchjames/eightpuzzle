@@ -15,13 +15,13 @@ class Queue {
     dequeue() {
         if (this.nItems > 0) {
             this.nItems -= 1;
-            return this.stack.pop();
+            return this.queue.pop();
         }
         return null;     
     }
     peek() {
         if (this.nItems > 0) {
-            return this.stack[this.nItems - 1];
+            return this.queue[this.nItems - 1];
         }
         return null;
     }
