@@ -77,14 +77,11 @@ class EightPuzzle {
         break;
       }
       case 'Left': {
-        nextLocation = this.modulo(emptyLocation - 1, 3);
+        nextLocation = emptyLocation - 1;
         break;
       }
       case 'Right': {
-        nextLocation = this.modulo(emptyLocation + 1, 3);
-        if (nextLocation !== 0) {
-
-        }
+          nextLocation = emptyLocation + 1;
         break;
       }
       default: {

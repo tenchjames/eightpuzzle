@@ -46,6 +46,11 @@ function dfs(eightPuzzle) {
     }
     stats.nodesExpanded += 1;
 
+    let currentActions = actions.filter(a => {
+      return eightPuzzle.canTakeAction(node.state, a);
+    });
+    debugger;
+
     actions.forEach(action => {
       if (eightPuzzle.canTakeAction(node.state, action)) {
         const child = childNode(eightPuzzle, node, action);
@@ -63,3 +68,18 @@ function dfs(eightPuzzle) {
 }
 
 module.exports = dfs;
+
+// const neighbors = getNeighbors(state);
+// if (neighbors.length === 0) {
+//   state.paren = null;
+// } else {
+//   neighbors.forEach(n => {
+//     // check if not in frontier and not explored
+//     let inFrontier = frontierByState[n.state] ? true: false;
+//     let inExplored = explored[n.state] ? true : false;
+//     if (!inFrontier && !inExplored) {
+//       frontier.push(n);
+//       frontierByState[n.state] = true; // for faster searches
+//     }
+//   });
+// }
