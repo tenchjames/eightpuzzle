@@ -31,6 +31,7 @@ function dfs(eightPuzzle) {
   const frontierByState = new Set(); // for constant time look up
   const explored = new Set();
   const node = eightPuzzle.initialState;
+  const actions = eightPuzzle.actions.slice().reverse();
 
   frontier.push(node);
 
@@ -44,7 +45,8 @@ function dfs(eightPuzzle) {
       return node; // add some code to track levels, memory etc
     }
     stats.nodesExpanded += 1;
-    eightPuzzle.actions.reverse().forEach(action => {
+
+    actions.forEach(action => {
       if (eightPuzzle.canTakeAction(node.state, action)) {
         const child = childNode(eightPuzzle, node, action);
         if (!frontierByState.has(child.state) && !explored.has(child.state)) {
