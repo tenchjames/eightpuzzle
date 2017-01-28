@@ -9,13 +9,11 @@ class Stack {
         return this.topOfStack === -1;
     }
     push(item) {
-        this.stack.push(item);
-        this.topOfStack += 1;
+        this.stack[++this.topOfStack] = item;
     }
     pop() {
         if (this.topOfStack > -1) {
-            this.topOfStack -= 1;
-            return this.stack.pop();
+            return this.stack[this.topOfStack--];
         }
         return null;
     }
