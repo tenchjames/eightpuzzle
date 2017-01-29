@@ -32,7 +32,7 @@ class EightPuzzle {
     switch (action) {
       case 'Up':
         nextLocation = emptyLocation - 3;
-        if (nextLocation > 0) {
+        if (nextLocation > -1) {
           return true;
         }
         break;

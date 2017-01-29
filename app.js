@@ -14,18 +14,19 @@ const searches = {
   ast: ast
 };
 
-//const initialState = new Node({state: "120345678"});
-//const initialState = new Node({state: "312045678"});
 //const initialState = new Node({state: "125340678"});
-const initialState = new Node({state: "867254301"});
+//const initialState = new Node({state: "312045678"});
+const initialState = new Node({state: "806547231"})
 const eightPuzzle = new EightPuzzle(initialState);
+//searches["bfs"](eightPuzzle);
+//searches["dfs"](eightPuzzle);
 searches["ast"](eightPuzzle);
 
 
 //const manhatthanState = new Node({state:"813402765"});
 //console.log(manhatthanDistance(manhatthanState.state, findGoalState(manhatthanState)));
 
-// let pq = new PriorityQueue((a,b) => {
+// let pq = new PriorityQueucleae((a,b) => {
 //   if (a.cost > b.cost) {
 //     return 1;
 //   }

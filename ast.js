@@ -40,7 +40,7 @@ function ast(eightPuzzle) {
     if (nodeB.estimatedTotalCost > nodeA.estimatedTotalCost) {
       return -1;
     }
-    return preferredOrder.indexOf(nodeA.action) < preferredOrder.indexOf(nodeB.action) ? 1 : -1;
+    return preferredOrder.indexOf(nodeA.action) > preferredOrder.indexOf(nodeB.action) ? 1 : -1;
   }
 
   const frontier = new PriorityQueue(compare);
@@ -49,7 +49,7 @@ function ast(eightPuzzle) {
 
   let startTime = new Date().getTime();
   const node = eightPuzzle.initialState;
-
+  // TODO: SHOULD HAVE COST
   frontier.add(node);
 
   while (!frontier.isEmpty()) {
